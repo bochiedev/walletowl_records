@@ -30,8 +30,32 @@ class CreateInvoiceAPIView(generics.ListCreateAPIView):
         serializer = InvoiceCreateSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception = True):
-            invoice_obj =  Invoice
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer._errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreateReceiptAPIView(generics.ListCreateAPIView):
+    serializer_class = ReceiptSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Receipt.objects.all()
+
+    def post(self, request, format=None ):
+        serializer = ReceiptCreateSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception = True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer._errors,status=status.HTTP_400_BAD_REQUEST)
+
+class ListReceiptAPIView(generics.ListAPIView):
+    serializer_class = ReceiptSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Receipt.objects.all()
+
+    def get(self, request, format=None ):
+        receipts = Receipt.objects.all().prefetch_related('Invoice__invoice_no')
+        serializer = ReceiptSerializer(receipts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
