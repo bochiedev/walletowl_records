@@ -19,5 +19,7 @@ from rest_framework.authtoken import views
 urlpatterns = [
     url(r'^login/', views.obtain_auth_token),
     url(r'^account/', include('accounts.urls', namespace='account')),
+    url(r'^docs/', include('documents.urls', namespace='docs')),
+
 
 ]

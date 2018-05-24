@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from .models import *
 from django.shortcuts import render
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -18,18 +18,19 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-
-
 # Create your views here.
 
-class UserCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = UserCreateSerializer
-    permission_classes = [permissions.AllowAny]
-    queryset = User.objects.all()
 
-    def post(self, request, format=None):
-        serializer = UserCreateSerializer(data=request.data)
+class CreateInvoiceAPIView(generics.ListCreateAPIView):
+    serializer_class = InvoiceCreateSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Invoice.objects.all()
+
+    def post(self, request, format=None ):
+        serializer = InvoiceCreateSerializer(data=request.data)
+
         if serializer.is_valid(raise_exception = True):
+            invoice_obj =  Invoice
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
